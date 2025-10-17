@@ -15,6 +15,11 @@ llm:
     base_url: ${BASE_URL}
     api_key: ${API_KEY}
 
+  gemini-flash-latest:
+    model: gemini-2.5-flash
+    base_url: ${BASE_URL}
+    api_key: ${API_KEY}
+
   # GPT
   gpt-4.1:
     model: gpt-4.1

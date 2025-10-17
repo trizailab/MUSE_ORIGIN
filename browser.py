@@ -18,7 +18,7 @@ class BrowserUse:
         self.config = load_browser_use_config()
         self.browser_session: BrowserSession | None = None
         self.controller: Controller | None = None
-        # self.file_system: FileSystem | None = None
+        self.file_system: FileSystem | None = None
         self.llm: ChatOpenAI | None = None
 
     # TODO: Need to expose more path parameters to initialization

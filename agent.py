@@ -633,7 +633,7 @@ class MUSE(BaseAgent):
         Multistep task planning, but the instructions during planning are not saved to working memory.
         Ultimately, only two messages are added to working memory: user_message->user_prompt, assistant_message->task_plan
         """
-        self.llm = LLM("gemini-2.5-flash-thinking")
+        self.llm = LLM("gemini-2.5-flash")
 
         cur_prompt = user_prompt + "\n\n" + MUSE_list_fact_prompt + self.language_prompt
         known_facts = ""
