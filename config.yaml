@@ -4,82 +4,114 @@ llm:
     model: gemini-2.5-pro
     base_url: ${BASE_URL}
     api_key: ${API_KEY}
+    input_tokens_price: 1.25   # $ per 1M tokens (up to 200K context)
+    output_tokens_price: 10.0
 
   gemini-2.5-flash:
     model: gemini-2.5-flash
     base_url: ${BASE_URL}
     api_key: ${API_KEY}
+    input_tokens_price: 0.30   # $ per 1M tokens
+    output_tokens_price: 2.50
 
   gemini-2.5-flash-thinking:
     model: gemini-2.5-flash-thinking
     base_url: ${BASE_URL}
     api_key: ${API_KEY}
+    input_tokens_price: 0.30   # $ per 1M tokens
+    output_tokens_price: 2.50
 
   gemini-flash-latest:
     model: gemini-2.5-flash
     base_url: ${BASE_URL}
     api_key: ${API_KEY}
+    input_tokens_price: 0.30   # $ per 1M tokens
+    output_tokens_price: 2.50
 
   gemini-flash-lite-latest:
     model: gemini-flash-lite-latest
     base_url: ${BASE_URL}
     api_key: ${API_KEY}
+    input_tokens_price: 0.10   # $ per 1M tokens
+    output_tokens_price: 0.40
 
   # GPT
   gpt-4.1:
     model: gpt-4.1
     base_url: ${BASE_URL}
     api_key: ${API_KEY}
+    input_tokens_price: 3.0    # $ per 1M tokens (GPT-4o pricing)
+    output_tokens_price: 10.0
 
   gpt-5:
     model: gpt-5
     base_url: ${BASE_URL}
     api_key: ${API_KEY}
+    input_tokens_price: 1.25   # $ per 1M tokens
+    output_tokens_price: 10.0
 
   gpt-5-mini:
     model: gpt-5-mini
     base_url: ${BASE_URL}
     api_key: ${API_KEY}
+    input_tokens_price: 0.25   # $ per 1M tokens
+    output_tokens_price: 2.0
 
   o4-mini:
     model: o4-mini
     base_url: ${BASE_URL}
     api_key: ${API_KEY}
+    input_tokens_price: 0.15   # $ per 1M tokens (estimated)
+    output_tokens_price: 0.60
 
   # Deepseek
   deepseek-v3:
     model: USD-guiji/deepseek-v3
     base_url: ${BASE_URL}
     api_key: ${API_KEY}
+    input_tokens_price: 0.27   # $ per 1M tokens
+    output_tokens_price: 1.10
 
   deepseek-r1:
     model: USD-guiji/deepseek-r1
     base_url: ${BASE_URL}
     api_key: ${API_KEY}
+    input_tokens_price: 0.55   # $ per 1M tokens
+    output_tokens_price: 2.19
 
   # Claude
   claude-thinking:
     model: claude-opus-4-20250514-thinking
     base_url: ${BASE_URL}
     api_key: ${API_KEY}
+    input_tokens_price: 15.0   # $ per 1M tokens (estimated)
+    output_tokens_price: 75.0
 
   claude:
     model: claude-3-7-sonnet-20250219
     base_url: ${BASE_URL}
     api_key: ${API_KEY}
+    input_tokens_price: 3.0    # $ per 1M tokens (estimated)
+    output_tokens_price: 15.0
 
   claude-3-5-haiku-latest:
     model: claude-3-5-haiku-latest
     base_url: ${BASE_URL}
     api_key: ${API_KEY}
+    input_tokens_price: 0.80   # $ per 1M tokens
+    output_tokens_price: 4.0
 
   # Qwen
   Qwen3-235B-A22B:
     model: Qwen/Qwen3-235B-A22B
     base_url: ${BASE_URL}
     api_key: ${API_KEY}
+    input_tokens_price: 0.0    # Free or unknown pricing
+    output_tokens_price: 0.0
 
   Qwen3-32B:
     model: Qwen/Qwen3-32B
     base_url: ${BASE_URL}
     api_key: ${API_KEY}
+    input_tokens_price: 0.0    # Free or unknown pricing
+    output_tokens_price: 0.0

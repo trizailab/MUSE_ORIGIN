@@ -4,7 +4,10 @@ import httpx
 import base64
 import aiofiles
 import traceback
+import json
 from pathlib import Path
+from datetime import datetime
+from threading import Lock
 from dotenv import load_dotenv
 from openai import AsyncOpenAI
 from typing import AsyncGenerator, Union
@@ -15,6 +18,69 @@ with open("config.yaml", "r") as f:
     raw_config = os.path.expandvars(f.read())
     config = yaml.safe_load(raw_config)
 LLM_CONFIG = config["llm"]
+
+
+class TokenLogger:
+    """Logger for recording token usage and costs to TOKENS-LOG.md"""
+
+    _instance = None
+    _lock = Lock()
+
+    def __new__(cls):
+        if cls._instance is None:
+            with cls._lock:
+                if cls._instance is None:
+                    cls._instance = super().__new__(cls)
+        return cls._instance
+
+    def __init__(self):
+        if not hasattr(self, 'initialized'):
+            self.log_file = Path("TOKENS-LOG.md")
+
+            # Create file with header if it doesn't exist
+            if not self.log_file.exists():
+                with open(self.log_file, "w", encoding="utf-8") as f:
+                    f.write("# MUSE Token Usage Log\n\n")
+                    f.write("Each line below is a JSON object representing one LLM request:\n\n")
+
+            self.initialized = True
+
+    def log_request(
+        self,
+        model: str,
+        input_tokens: int,
+        output_tokens: int,
+        input_price: float,
+        output_price: float
+    ):
+        """Log a single LLM request with token usage and cost"""
+        try:
+            # Calculate cost (prices are per 1 million tokens)
+            total_cost = (
+                (input_tokens * input_price / 1_000_000) +
+                (output_tokens * output_price / 1_000_000)
+            )
+
+            # Format date
+            date_str = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
+
+            # Create JSON entry
+            log_entry = {
+                "date": date_str,
+                "model": model,
+                "input_tokens": input_tokens,
+                "output_tokens": output_tokens,
+                "total_cost": round(total_cost, 6)
+            }
+
+            # Write to file (append, new line)
+            with self._lock:
+                with open(self.log_file, "a", encoding="utf-8") as f:
+                    f.write(json.dumps(log_entry, ensure_ascii=False) + "\n")
+
+        except Exception as e:
+            # Don't fail if logging doesn't work
+            print(f"⚠️ Warning: Failed to log tokens: {e}")
 
 class LLM:
     NUM_CALLS = 0
@@ -33,20 +99,40 @@ class LLM:
             timeout=180
         )
         self.model = cfg["model"]
+        self.model_name = model  # Store model name from config for logging
 
-    @staticmethod
-    def _accumulate_usage(usage):
+        # Token prices (defaults to 0.0 if not specified)
+        self.input_price = cfg.get("input_tokens_price", 0.0)
+        self.output_price = cfg.get("output_tokens_price", 0.0)
+
+        # Initialize token logger
+        self.token_logger = TokenLogger()
+
+    def _accumulate_usage(self, usage):
+        """Accumulate usage statistics and log to file"""
         get = (lambda k, default=0:
                usage.get(k, default) if isinstance(usage, dict)
                else getattr(usage, k, default))
-        prompt_tokens = get("prompt_tokens", 0)
-        completion_tokens = get("completion_tokens", 0)
-        LLM.PROMPT_TOKENS += int(prompt_tokens or 0)
-        LLM.COMPLETION_TOKENS += int(completion_tokens or 0)
+        prompt_tokens = int(get("prompt_tokens", 0) or 0)
+        completion_tokens = int(get("completion_tokens", 0) or 0)
+
+        # Accumulate static counters (as before)
+        LLM.PROMPT_TOKENS += prompt_tokens
+        LLM.COMPLETION_TOKENS += completion_tokens
         LLM.MAX_TOKENS = max(
             LLM.MAX_TOKENS,
-            int(prompt_tokens or 0) + int(completion_tokens or 0)
+            prompt_tokens + completion_tokens
         )
+
+        # Log this specific request
+        if prompt_tokens > 0 or completion_tokens > 0:
+            self.token_logger.log_request(
+                model=self.model_name,
+                input_tokens=prompt_tokens,
+                output_tokens=completion_tokens,
+                input_price=self.input_price,
+                output_price=self.output_price
+            )
 
     async def async_generate(
             self,
