@@ -28,7 +28,7 @@ Save the results as a Markdown file.
 
 async def main():
     agent = MUSE(
-        init_model_name="gemini-2.5-flash",
+        init_model_name=os.getenv("GEMINI_MODEL", "gemini-2.5-flash"),
         sys_prompt_template=MUSE_sys_prompt,
         memory_dir="memory",
         use_memory=True,

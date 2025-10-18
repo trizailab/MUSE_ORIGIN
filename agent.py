@@ -633,7 +633,7 @@ class MUSE(BaseAgent):
         Multistep task planning, but the instructions during planning are not saved to working memory.
         Ultimately, only two messages are added to working memory: user_message->user_prompt, assistant_message->task_plan
         """
-        self.llm = LLM("gemini-2.5-flash")
+        self.llm = LLM(os.getenv("GEMINI_PLAN_MODEL", "gemini-2.5-flash"))
 
         cur_prompt = user_prompt + "\n\n" + MUSE_list_fact_prompt + self.language_prompt
         known_facts = ""
@@ -678,7 +678,7 @@ class MUSE(BaseAgent):
         subtasks = "\n    ".join([f"{i + 1}. {subtask.name}: {subtask.goal}" for i, subtask in enumerate(self.to_do_subtasks)])
         self.history[-1] = create_message("assistant",f"{known_facts}\n\n* The task can be divided into the following subtasks:\n    {subtasks}")
 
-        self.llm = LLM("gemini-2.5-flash")
+        self.llm = LLM(os.getenv("GEMINI_EXECUTE_MODEL", "gemini-2.5-flash"))
 
     async def _reflect_react(self, prompt: str, trajectory: List[dict], action_limit: int = 8):
         start_index = len(trajectory)

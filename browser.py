@@ -60,7 +60,7 @@ class BrowserUse:
         self.controller = Controller()
 
         self.llm = ChatOpenAI(
-            model='gemini-2.5-pro',
+            model=os.getenv('GEMINI_BROWSER_MODEL', 'gemini-2.5-pro'),
             api_key=os.getenv('API_KEY'),
             base_url=os.getenv('BASE_URL'),
             temperature=0.7,

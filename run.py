@@ -35,7 +35,7 @@ async def main():
     parser.add_argument("--task", type=str, help="Please enter your instructions")
     parser.add_argument("--mode", type=str, help="Training mode", default="test")
     parser.add_argument("--round", type=int, help="Training round", default=1)
-    parser.add_argument("--llm", type=str, help="Base LLM", default="gemini-2.5-flash")
+    parser.add_argument("--llm", type=str, help="Base LLM", default=os.getenv("GEMINI_MODEL", "gemini-2.5-flash"))
     args = parser.parse_args()
 
     mode = args.mode

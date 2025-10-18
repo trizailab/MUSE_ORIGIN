@@ -208,7 +208,7 @@ if __name__ == "__main__":
     import asyncio
 
     async def test():
-        llm = LLM("gemini-2.5-flash")
+        llm = LLM(os.getenv("GEMINI_MODEL", "gemini-2.5-flash"))
 
         history = [
             {"role": "user", "content": [{"type": "text", "text": "You are Long Aotian from Class 3-1"}]},

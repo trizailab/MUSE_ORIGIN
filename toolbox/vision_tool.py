@@ -49,7 +49,7 @@ async def extract_image_content_by_gpt4o(
 
     try:
         response = client.chat.completions.create(
-            model="gpt-4o",
+            model=os.getenv("VISION_MODEL", "gpt-4o"),
             messages=[
                 {
                     "role": "user",
