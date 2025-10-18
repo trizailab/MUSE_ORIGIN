@@ -35,7 +35,8 @@ class TokenLogger:
 
     def __init__(self):
         if not hasattr(self, 'initialized'):
-            self.log_file = Path("TOKENS-LOG.md")
+            # Use /app/logs directory for persistence (mounted volume)
+            self.log_file = Path("/app/logs/TOKENS-LOG.md")
 
             # Create file with header if it doesn't exist
             if not self.log_file.exists():
@@ -64,13 +65,13 @@ class TokenLogger:
             # Format date
             date_str = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
 
-            # Create JSON entry
+            # Create JSON entry with formatted cost (no scientific notation)
             log_entry = {
                 "date": date_str,
                 "model": model,
                 "input_tokens": input_tokens,
                 "output_tokens": output_tokens,
-                "total_cost": round(total_cost, 6)
+                "total_cost": f"{total_cost:.6f}"  # Format as decimal string
             }
 
             # Write to file (append, new line)
